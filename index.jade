@@ -7,34 +7,66 @@ html
             //#scroll Включить скролл
             include ./nav.jade
             router-view
-        
+            
         script(type="text/x-template", id="home")
             .container
                 form
-                    .row.col-md-3.col-lg-3
-                        input.form-control(type="search", placeholder="Search", v-model="search")
-                        select.form-control(v-model='genre')
-                            option(value="") Select genre
-                            option(v-for="value in genres", :value="value.id") {{value.name}}
-                        //router-link(:to="")
-                        i.icon.ion-md-heart(title="Add to favourites") {{favourites.length}}
-                .item(v-for="item in filteredItems")
+                    input.form-control(type="search", placeholder="Search", v-model="search")
+                    select.form-control(v-model='genre')
+                        option(value="") Select genre
+                        option(v-for="value in genres", :value="value.id") {{value.name}}
+                      //router-link(:to="")
+                    i.icon.ion-md-heart(title="Add to favourites") {{favourites.length}}
+                
+                router-link.item(v-for="item in filteredItems", :key="item.id", :to="{ name: 'details', params: { id: item.id }}")
                     img(:src="item.image_url")
                     .rating
                         i.active
                     p.title {{item.title}}
                     //pre {{item.genre_ids}}
-                    
-                    span.badge.badge-warning.mr-1(v-for="id in item.genre_ids", @click="genre = id", data-toggle="tooltip", data-placement="top", title="select genre") {{genresMap[id]}} 
+                    span.badge.badge-warning.mr-1(v-for="id in item.genre_ids", @click.prevent.stop="genre = id", data-toggle="tooltip", data-placement="top", title="select genre") {{genresMap[id]}} 
                     .descr {{item.overview}}
                     //i.icon(:class="{'ion-md-heart' : item.isFavourite, 'ion-md-heart-empty' : !item.isFavourite}")
-                    i.icon(:class="item.isFavourite? 'ion-md-heart': 'ion-md-heart-empty'", @click="setFavourite(item)")
+                    i.icon(:class="item.isFavourite? 'ion-md-heart': 'ion-md-heart-empty'", @click.prevent.stop="setFavourite(item)")
                     //ion-icon.add_to_favourites(name="star-outline", 
                         @click="addFavourites(item.id)"/*,:class="active: item.favourite"*/)
+                    
                 #more(@click="getItems()") Показати ще 
                 #scroll_to_top GO UP!
+        
         script(type="text/x-template", id="favourites")
             h3 hfdhkjhfkdjgjkdf
+        
+        script(type="text/x-template", id="details")
+            .container
+                img(:src="item.image_url")
+                .rating
+                    i.active
+                h1.title {{item.title}}
+                //pre {{item.genre_ids}}
+                
+                span.badge.badge-warning.mr-1(v-for="item in item.genres") {{item.name}} 
+                .descr {{item.overview}}
+                //i.icon(:class="{'ion-md-heart' : item.isFavourite, 'ion-md-heart-empty' : !item.isFavourite}")
+                .icon(:class="item.isFavourite? 'ion-md-heart': 'ion-md-heart-empty'", @click="setFavourite(item)")
+                //ion-icon.add_to_favourites(name="star-outline", 
+                    @click="addFavourites(item.id)"/*,:class="active: item.favourite"*/)
+                    
+        
+        script(type="text/x-template", id="film-card")
+            .item
+                img(:src="item.image_url")
+                .rating
+                    i.active
+                p.title {{item.title}}
+                //pre {{item.genre_ids}}
+                
+                span.badge.badge-warning.mr-1(v-for="id in item.genre_ids", @click="genre = id", data-toggle="tooltip", data-placement="top", title="select genre") {{genres[id]}} 
+                .descr {{item.overview}}
+                //i.icon(:class="{'ion-md-heart' : item.isFavourite, 'ion-md-heart-empty' : !item.isFavourite}")
+                i.icon(:class="item.isFavourite? 'ion-md-heart': 'ion-md-heart-empty'", @click="setFavourite(item)")
+                //ion-icon.add_to_favourites(name="star-outline", 
+                    @click="addFavourites(item.id)"/*,:class="active: item.favourite"*/)
 
         include ./scripts.jade        
         script(src='./main.js')

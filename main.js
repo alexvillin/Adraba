@@ -1,3 +1,4 @@
+
 const Home = {
     template:"#home",
     data: function(){
@@ -11,7 +12,9 @@ const Home = {
             favourites: [],
         }
     },
-
+//    components: {
+//        'film-card': FilmCard,
+//    },
     created: function () {
         var vm = this;
         vm.favourites = api().favourites.get();
@@ -64,6 +67,7 @@ const Home = {
         getItems: function () {
 
         },
+   
         setFavourite: function (item) {
             item.isFavourite = !item.isFavourite;
             var index = this.favourites.indexOf(item.id);
@@ -85,17 +89,56 @@ const Home = {
     }
 
 };
-const Favourites = {
-    template:"#favourites"
-};
+const Details = {
+    template: "#details",
+    data: function(){
+        return {
+            item: {} 
+        }
+    },
+    created: function () {
+        var vm = this;
+        var id = vm.$route.params.id;
+        
+        vm.favourites = api().favourites.get();
+        
+        api().movies.getById(id).then(function (v) {
+            
+                if (v.backdrop_path) {
+                    v.image_url = image_url + v.backdrop_path;
+                } else {
+                    v.image_url = image_default;
+                }
+                v.isFavourite = vm.favourites.indexOf(v.id) !== -1;
+            vm.item = v;
+        });
 
+    },
+    
+};
+const Favourites = {
+    template:"#favourites",
+};
+const FilmCard = {
+//    name: 'FilmCard',
+    template: "#film-card",
+    props: {
+        item: Object,
+        genres: Object,
+    },
+    
+    
+};
 
 const router = new VueRouter({
   routes: [
-    { path: '/', component: Home },
-    { path: '/favourites', component: Favourites }
+    { path: '/', component: Home, name: 'home' },
+    { path: '/favourites', component: Favourites, name: 'favourites' },
+    { path: '/details/:id', component: Details, name: 'details' }
   ]
 })
+
+
 
 
 
@@ -114,7 +157,15 @@ var api = function () {
                     }).catch(function (e) {
                         console.log(e);
                     });
-            }
+            },
+            getById: function(id){
+                return axios.get(url + '/movie/'+ id + key)
+                    .then(function (response) {
+                        return response.data;
+                    }).catch(function (e) {
+                        console.log(e);
+                    });
+            },
         },
         genres: function () {
             return axios.get(url + '/genre/movie/list' + key)
@@ -165,6 +216,7 @@ var app = new Vue({
     components: {
         'home': Home,
         'favourites': Favourites,
+        //'film-card': FilmCard,
     },
 
 
