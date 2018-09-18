@@ -1,112 +1,171 @@
-//Vue.component('blog-post', {
-//    props: ['post'],
-//    template: `
-//        <div class="blog-post">
-//            <h3>{{ post.title }}</h3>
-//            <slot></slot>    
-//<button class="btn btn-primary" @click="$emit('growth')">Uptext</button>
-//        </div>
-//    `
-//});//
-var movies_url = 'https://api.themoviedb.org/3/movie/popular?api_key=ef963e24f0dc29f7a9347e404b8c5b62';
-var favourites = JSON.parse(localStorage.getItem('favourites') || "[]");
-
-new Vue({
-    el: "#main",
-    data: {
-        items: [],
-        search: '',
-        //favourites: [1, 2, 3],
+const Home = {
+    template:"#home",
+    data: function(){
+        return{
+            movies: [],
+            search: '',
+            items: [],
+            genres: [],
+            genresMap: {},
+            genre: '',
+            favourites: [],
+        }
     },
+
     created: function () {
-        this.getItems();
-        //favourites = this.getFavourites();
-        console.log(favourites, 123);
-        this.items.forEach(function (obj) {
-            console.log(obj);
-            if (favourites.indexOf(obj.id) > -1)
-                obj.isActive = true;
+        var vm = this;
+        vm.favourites = api().favourites.get();
+        api().movies.popular().then(function (v) {
+            v.results.forEach(function (item) {
+                if (item.backdrop_path) {
+                    item.image_url = image_url + item.backdrop_path;
+                } else {
+                    item.image_url = image_default;
+                }
+                item.isFavourite = vm.favourites.indexOf(item.id) !== -1;
+            })
+            vm.movies = v.results;
         });
-        console.log(this.items);
-        //        this.items = [];
+        api().genres().then(function (v) {
+            vm.genres = v.genres;
+            vm.genres.map(function (obj) {
+                vm.genresMap[obj.id] = obj.name;
+            })
+        })
+//        api().favourites().then(function (v) {
+//            vm.favourites = v;
+//        })
+
+    },
+    watch: {
+        
+    },
+    computed: {
+        filteredItems: function () {
+            //var vm = this;
+            var search = this.search.toLowerCase();
+            var items = this.movies;
+            var genre = this.genre;
+            if (search) {
+                items = items.filter(function (item) {
+                    return Object.values(item).join().toLowerCase().indexOf(search) !== -1;
+                })
+            }
+            if (genre) {
+                items = items.filter(function (item) {
+                    return item.genre_ids.indexOf(genre) !== -1;
+                })
+            }
+            return items;
+
+        }
     },
     methods: {
         getItems: function () {
-            return this.$http.get(movies_url).then(function (response) {
-                console.log(response);
-                this.items = response.body.results;
-                this.data = response;
-                return true;
-            }, function (error) {
-                console.log(error);
-            });
-        },
-        upadetItems: function () {
-            //                ;
-            var newItems = this.getItems()
-            var current = [].slice.call(this.items);
-            this.items = current.concat(newItems);
-            //                this.items.concat(this.getItems());
-            //            console.log(this.items);
 
         },
-        searchItems: function () {
-            //we can use here som custom request with parameters for backend sorting
-            //    return this.$http.get('./items.json')
-            //console.log(this.items);
+        setFavourite: function (item) {
+            item.isFavourite = !item.isFavourite;
+            var index = this.favourites.indexOf(item.id);
+            var done = false;
+            if (index !== -1) {
+                api().favourites.remove(item.id);
+                //                .then(function(){
+                                    this.favourites.splice(index, 1);
+                //                });
 
-            var items = [].slice.call(this.items)
-            items.filter(function (obj) {
-                return obj.title.indexOf(1);
-            });
-
-
-        },
-        addFavourites: function (id) {
-            if (typeof (Storage) !== "undefined") {
-                //var favourites = this.getFavourites();
-                console.log(
-                    //                    id,
-                    //                    this.items,
-                    //Array.isArray(this.favourites)
-                );
-                var exists = favourites.some(function (item, index) {
-                    //console.log(item, index);
-                    return (item == id) && removeItem(index);
-                });
-
-                if (!exists) {
-                    this.items.some(function (item, index) {
-                        return item.id == id && addItem();
-                    });
-                }
-
-                function addItem() {
-                    favourites.push(id);
-                    localStorage.setItem('favourites', JSON.stringify(favourites));
-
-                }
-
-                function removeItem(index) {
-                    favourites.splice(index, 1);
-                    localStorage.setItem('favourites', JSON.stringify(favourites));
-                    return true;
-                }
             } else {
-                console.log('Sorry! No Web Storage support..');
+                api().favourites.add(item.id);
+                //                .then(function(){
+                                    this.favourites.push(item.id);
+                //                });
             }
         },
+
     }
 
-    //    watch: {
-    //        search: function (val) {
-    //            this.items = Array.prototype.filter.call(this.items, function (item) {
-    //
-    //                console.log(item);
-    //                return item.title.indexOf(val);
-    //            });
-    //        },
-    //    },
+};
+const Favourites = {
+    template:"#favourites"
+};
+
+
+const router = new VueRouter({
+  routes: [
+    { path: '/', component: Home },
+    { path: '/favourites', component: Favourites }
+  ]
+})
+
+
+
+const image_url = 'https://image.tmdb.org/t/p/w500';
+const image_default = 'img/default.png';
+var api = function () {
+    const url = 'https://api.themoviedb.org/3';
+    const key = '?api_key=ef963e24f0dc29f7a9347e404b8c5b62';
+    return {
+        movies: {
+
+            popular: function () {
+                return axios.get(url + '/movie/popular' + key)
+                    .then(function (response) {
+                        return response.data;
+                    }).catch(function (e) {
+                        console.log(e);
+                    });
+            }
+        },
+        genres: function () {
+            return axios.get(url + '/genre/movie/list' + key)
+                .then(function (response) {
+                    return response.data;
+                }).catch(function (e) {
+                    console.log(e);
+                });
+        },
+        favourites: {
+            //todo with async
+            get: function () {
+                if (typeof (Storage) !== "undefined") {
+                    return JSON.parse(localStorage.getItem('favourites') || "[]");
+                } else {
+                    console.log('Sorry! No Web Storage support..');
+                }
+            },
+            set: function (favourites) {
+                localStorage.setItem('favourites', JSON.stringify(favourites));
+                return favourites.length;
+
+            },
+            add: function (id) {
+                var favourites = this.get();
+                favourites.push(id);
+                return this.set(favourites);
+            },
+
+            remove: function (id) {
+                var favourites = this.get();
+                favourites.splice(favourites.indexOf(id), 1);
+                return this.set(favourites);
+                
+            },
+        },
+
+
+
+    }
+
+}
+
+
+var app = new Vue({
+    el: "#main",
+    router: router,
+    components: {
+        'home': Home,
+        'favourites': Favourites,
+    },
 
 
 });

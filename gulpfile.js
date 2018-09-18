@@ -1,42 +1,36 @@
 //From http://stackoverflow.com/questions/25384796/can-i-set-gulp-livereload-to-run-after-all-files-are-compiled
 
+var express = require('express');
 var gulp = require('gulp');
 
 var jade = require('gulp-jade');
-//var gutil = require('gulp-util');
-//var stylus = require('gulp-stylus');
-//var jeet = require('jeet');
-//var nib = require('nib');
-//var uglify = require('gulp-uglify');
-var livereload = require('gulp-livereload');
 var sass = require('gulp-sass');
-var babel = require('gulp-babel');
-
+//var gutil = require('gulp-util');
+//var uglify = require('gulp-uglify');
+var connect = require('connect-livereload');
+var livereload = require('gulp-livereload');
 var sourcemaps = require('gulp-sourcemaps');
 
 var sources = {
     jade: "./*.jade",
     sass: "./scss/*.scss",
-    //    partials: "partials/**/*.jade",
-    //    stylus: "styl/**/*.styl",
-    //    scripts: "js/**/*.js"
+    js: "./*.js"
 };
 
 // Define destinations object
-var destinations = {
-    //  html: "dist/",
+var dest = {
     html: "./",
     css: "./css/",
-    js: "dist/js"
+    js: "./js/"
 };
 
 // Compile and copy Jade
 gulp.task("jade", function (event) {
     return gulp.src(sources.jade)
         .pipe(jade({
-            pretty: true
+            //pretty: true
         }))
-        .pipe(gulp.dest(destinations.html))
+        .pipe(gulp.dest(dest.html))
 });
 
 gulp.task('sass-sources', function () {
@@ -46,23 +40,13 @@ gulp.task('sass-sources', function () {
         .pipe(sourcemaps.write('./maps'))
         .pipe(gulp.dest('./css'));
 });
-//// Compile and copy Stylus
-//gulp.task("stylus", function (event) {
-//    return gulp.src(sources.stylus).pipe(stylus({
-//        use: [nib(), jeet()],
-//        import: [
-//      'nib',
-//      'jeet'
-//    ],
-//        style: "compressed"
-//    })).pipe(gulp.dest(destinations.css));
-//});
 gulp.task('sass', function (event) {
     return gulp.src(sources.sass)
         .pipe(sass({
             //outputStyle: 'compressed'
-        }).on('error', sass.logError))
-        .pipe(gulp.dest(destinations.css))
+        })
+        .on('error', sass.logError))
+        .pipe(gulp.dest(dest.css))
 });
 // Minify and copy all JavaScript
 //gulp.task('scripts', function () {
@@ -72,16 +56,10 @@ gulp.task('sass', function (event) {
 //});
 //babel
 
-gulp.task("babel", function () {
-    return gulp.src("./*.js").
-    pipe(babel()).
-    pipe(gulp.dest("./js"));
-});
 // Server
 gulp.task('server', function () {
-    var express = require('express');
     var app = express();
-    app.use(require('connect-livereload')());
+    app.use(connect());
     app.use(express.static(__dirname));
     //app.listen(4000, '127.0.0.1');
 });
@@ -89,22 +67,19 @@ gulp.task('server', function () {
 // Watch sources for change, executa tasks
 gulp.task('watch', function () {
     livereload.listen({
-        //  port: 57230,
-        //    host: '127.0.0.1'
+        host: '127.0.0.1',
+        port: 37687,
     });
     gulp.watch(sources.jade, ["jade", "refresh"]);
     gulp.watch(sources.sass, ["sass", "refresh"]);
-    //    gulp.watch(sources.partials, ["jade", "refresh"]);
-    //    gulp.watch(sources.stylus, ["stylus", "refresh"]);
-    //    gulp.watch(sources.scripts, ["scripts", "refresh"]);
+    gulp.watch(sources.js, ["refresh"]);
+    
 });
 
-// Refresh task. Depends on Jade task completion
 gulp.task("refresh", function () {
     livereload();
-    //console.log(livereload)
     console.log('LiveReload is triggered');
 });
 
 // Define default task
-gulp.task("default", ["jade", /* "stylus", "scripts", */ "server", "sass", "watch"]);
+gulp.task("default", ["jade", "sass", "watch"]);

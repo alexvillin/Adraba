@@ -18,7 +18,14 @@ body {
     background-size: cover;
     background-attachment: fixed;
 }
-
+.icon{
+    color:red;
+  font-size: 25px;
+    cursor: pointer;
+}
+.badge{
+    cursor:pointer;
+}
 nav {
     padding: 1.5rem;
     margin-right: 0;
