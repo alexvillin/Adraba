@@ -12,13 +12,6 @@ const Favourites = {
     template:"#favourites",
 };
 
-var shared = {
-    favourites: [],
-    genres: [],
-    genresMap: {},
-    genre: '',
-    search: '',
-};
 
 const router = new VueRouter({
   routes: [
@@ -32,7 +25,9 @@ var app = new Vue({
     el: "#main",
     router: router,
     data: {
-        shared: shared,
+        favourites: [],
+        genres: [],
+        //shared: shared,
     },
 //    components: {
 //        'home': Home,
@@ -41,13 +36,14 @@ var app = new Vue({
 //    },
     created: function () {
         var vm = this;
-        vm.shared.favourites = api().favourites.get();
+        vm.favourites = api().favourites.get();
 
         api().genres().then(function (v) {
-            vm.shared.genres = v.genres;
+            vm.genres = v.genres;
             
         })
 
     },
+    
 
 });

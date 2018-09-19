@@ -6,11 +6,10 @@ html
         #main
             //#scroll Включить скролл
             include ./nav.jade
-            router-view
-            //router-view(v-bind="[favourites, genres]")
+            router-view(:favourites="favourites", :genres="genres")
             
         script(type="text/x-template", id="home")
-            .container
+            .container()
                 form
                     input.form-control(type="search", placeholder="Search", v-model="search")
                     select.form-control(v-model='genre')
@@ -20,7 +19,8 @@ html
                     router-link.icon.ion-md-heart(title="show favourites", to="favourites") {{favourites.length}}
                 
                 .isLoading(v-if="isLoading")
-                film-card(v-for="item in filteredItems", :key="item.id", :item="item")
+                film-card(v-for="item in filteredItems", :key="item.id", :item="item", :genres="genresMap",
+                    @gchange="genre = $event", @fchange="setFavourite($event)")
                 //router-link.item(v-for="item in filteredItems", :to="'details/'+ item.id")
                     img(:src="item.image_url")
                     .rating
@@ -64,11 +64,11 @@ html
                 p.title {{item.title}}
                 //pre {{item.genre_ids}}
                 
-                span.badge.badge-warning.mr-1(v-for="id in item.genre_ids", @click.prevent.stop="genre = id", 
+                span.badge.badge-warning.mr-1(v-for="id in item.genre_ids", @click.prevent="$emit('gchange', id)", 
                     data-toggle="tooltip", data-placement="top", title="select genre") {{genres[id]}} 
                 .descr {{item.overview}}
                 i.icon(:class="item.isFavourite? 'ion-md-heart': 'ion-md-heart-empty'", 
-                    @click.prevent.stop="setFavourite(item)", title="Add to favourites")
+                    @click.prevent="$emit('fchange', item)", title="Add to favourites")
        
 
         include ./scripts.jade 
