@@ -1,23 +1,29 @@
-
+function prepareData(v){
+    if (v.backdrop_path) {
+                    v.image_url = image_url + v.backdrop_path;
+                } else {
+                    v.image_url = image_default;
+                }
+                v.isFavourite = vm.favourites.indexOf(v.id) !== -1;
+    
+}
 const Home = {
     template:"#home",
+    props: ['favourites', 'genres'],
     data: function(){
         return{
             movies: [],
             search: '',
             items: [],
-            genres: [],
+//            genres: [],
             genresMap: {},
             genre: '',
-            favourites: [],
+            //favourites: [],
+            isLoading: true,
         }
     },
-//    components: {
-//        'film-card': FilmCard,
-//    },
-    created: function () {
+    created: function(){
         var vm = this;
-        vm.favourites = api().favourites.get();
         api().movies.popular().then(function (v) {
             v.results.forEach(function (item) {
                 if (item.backdrop_path) {
@@ -28,18 +34,13 @@ const Home = {
                 item.isFavourite = vm.favourites.indexOf(item.id) !== -1;
             })
             vm.movies = v.results;
+            vm.isLoading = false;
         });
-        api().genres().then(function (v) {
-            vm.genres = v.genres;
-            vm.genres.map(function (obj) {
-                vm.genresMap[obj.id] = obj.name;
-            })
+        vm.genres.map(function (obj) {
+            vm.genresMap[obj.id] = obj.name;
         })
-//        api().favourites().then(function (v) {
-//            vm.favourites = v;
-//        })
-
     },
+    
     watch: {
         
     },
@@ -63,11 +64,57 @@ const Home = {
 
         }
     },
-    methods: {
-        getItems: function () {
-
-        },
    
+
+};
+const Details = {
+    template: "#details",
+    data: function(){
+        return {
+            item: {},
+            related: [],
+        }
+    },
+    created: function () {
+        var vm = this;
+        var id = vm.$route.params.id;
+        
+        vm.favourites = api().favourites.get();
+        
+        api().movies.getById(id).then(function (v) {
+            
+                if (v.backdrop_path) {
+                    v.image_url = image_url + v.backdrop_path;
+                } else {
+                    v.image_url = image_default;
+                }
+                v.isFavourite = vm.favourites.indexOf(v.id) !== -1;
+            vm.item = v;
+        });
+        api().movies.related(id).then(function (v) {
+            v.results.forEach(function (item) {
+               // prepareData(item);
+            })
+            vm.related = v.results;
+        });
+
+    },
+    
+};
+const Favourites = {
+    template:"#favourites",
+};
+
+Vue.component('FilmCard', {
+    name: 'FilmCard',
+    template: "#film-card",
+    props: {
+        item: Object,
+        genres: Object,
+        favourites: Array,
+    },
+    methods: {
+    
         setFavourite: function (item) {
             item.isFavourite = !item.isFavourite;
             var index = this.favourites.indexOf(item.id);
@@ -87,48 +134,9 @@ const Home = {
         },
 
     }
-
-};
-const Details = {
-    template: "#details",
-    data: function(){
-        return {
-            item: {} 
-        }
-    },
-    created: function () {
-        var vm = this;
-        var id = vm.$route.params.id;
-        
-        vm.favourites = api().favourites.get();
-        
-        api().movies.getById(id).then(function (v) {
-            
-                if (v.backdrop_path) {
-                    v.image_url = image_url + v.backdrop_path;
-                } else {
-                    v.image_url = image_default;
-                }
-                v.isFavourite = vm.favourites.indexOf(v.id) !== -1;
-            vm.item = v;
-        });
-
-    },
-    
-};
-const Favourites = {
-    template:"#favourites",
-};
-const FilmCard = {
-//    name: 'FilmCard',
-    template: "#film-card",
-    props: {
-        item: Object,
-        genres: Object,
-    },
     
     
-};
+});
 
 const router = new VueRouter({
   routes: [
@@ -166,6 +174,14 @@ var api = function () {
                         console.log(e);
                     });
             },
+            related: function(id){
+                return axios.get(url + '/movie/'+ id + '/similar' + key)
+                    .then(function (response) {
+                        return response.data;
+                    }).catch(function (e) {
+                        console.log(e);
+                    });
+            },
         },
         genres: function () {
             return axios.get(url + '/genre/movie/list' + key)
@@ -190,7 +206,18 @@ var api = function () {
 
             },
             add: function (id) {
-                var favourites = this.get();
+                       api().movies.popular().then(function (v) {
+            v.results.forEach(function (item) {
+                if (item.backdrop_path) {
+                    item.image_url = image_url + item.backdrop_path;
+                } else {
+                    item.image_url = image_default;
+                }
+                item.isFavourite = vm.favourites.indexOf(item.id) !== -1;
+            })
+            vm.movies = v.results;
+            vm.isLoading = false;
+        }); var favourites = this.get();
                 favourites.push(id);
                 return this.set(favourites);
             },
@@ -213,11 +240,24 @@ var api = function () {
 var app = new Vue({
     el: "#main",
     router: router,
-    components: {
-        'home': Home,
-        'favourites': Favourites,
-        //'film-card': FilmCard,
+    data: {
+        favourites: [],
+        genres: []
     },
+//    components: {
+//        'home': Home,
+//        'favourites': Favourites,
+//        //'film-card': FilmCard,
+//    },
+    created: function () {
+        var vm = this;
+        vm.favourites = api().favourites.get();
 
+        api().genres().then(function (v) {
+            vm.genres = v.genres;
+            
+        })
+
+    },
 
 });
