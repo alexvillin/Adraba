@@ -16,10 +16,6 @@ const shared = {
     genresMap: {}
 }
 
-const Favourites = {
-    template: "#favourites",
-};
-
 
 const router = new VueRouter({
     routes: [
@@ -58,8 +54,6 @@ var app = new Vue({
                 vm.shared.genresMap[obj.id] = obj.name;
             })
         })
-        
-
     },
 
 

@@ -10,6 +10,7 @@ html
             
         script(type="text/x-template", id="home")
             #home.container
+                h3 Home
                 form
                     input.form-control(type="search", placeholder="Search", v-model="search")
                     select.form-control(v-model='genre')
@@ -39,7 +40,8 @@ html
         
         script(type="text/x-template", id="favourites")
             #favourites.container
-                h3 hfdhkjhfkdjgjkdf
+                h3 Favourites
+                film-card(v-for="item in movies", :key="item.id", :item="item")
         
         script(type="text/x-template", id="details")
             #details
@@ -79,6 +81,7 @@ html
         
         script(src='./home.js')
         script(src='./details.js')
+        script(src='./favourites.js')
         script(src='./filmCard.component.js')
         script(src='./api.service.js')
         script(src='./main.js')
