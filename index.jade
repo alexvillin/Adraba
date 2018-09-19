@@ -6,7 +6,7 @@ html
         #main
             //#scroll Включить скролл
             include ./nav.jade
-            router-view(:favourites="favourites", :genres="genres")
+            router-view
             //router-view(v-bind="[favourites, genres]")
             
         script(type="text/x-template", id="home")
@@ -20,7 +20,7 @@ html
                     router-link.icon.ion-md-heart(title="show favourites", to="favourites") {{favourites.length}}
                 
                 .isLoading(v-if="isLoading")
-                film-card(v-for="item in filteredItems", :item="item", :genres="genresMap", :key="item.id")
+                film-card(v-for="item in filteredItems", :key="item.id", :item="item")
                 //router-link.item(v-for="item in filteredItems", :to="'details/'+ item.id")
                     img(:src="item.image_url")
                     .rating
@@ -64,15 +64,19 @@ html
                 p.title {{item.title}}
                 //pre {{item.genre_ids}}
                 
-                span.badge.badge-warning.mr-1(v-for="id in item.genre_ids", @click="genre = id", 
+                span.badge.badge-warning.mr-1(v-for="id in item.genre_ids", @click.prevent.stop="genre = id", 
                     data-toggle="tooltip", data-placement="top", title="select genre") {{genres[id]}} 
                 .descr {{item.overview}}
-                //i.icon(:class="{'ion-md-heart' : item.isFavourite, 'ion-md-heart-empty' : !item.isFavourite}")
                 i.icon(:class="item.isFavourite? 'ion-md-heart': 'ion-md-heart-empty'", 
-                    @click="setFavourite(item)", title="Add to favourites")
+                    @click.prevent.stop="setFavourite(item)", title="Add to favourites")
        
 
-        include ./scripts.jade        
+        include ./scripts.jade 
+        
+        script(src='./home.js')
+        script(src='./details.js')
+        script(src='./filmCard.component.js')
+        script(src='./api.service.js')
         script(src='./main.js')
 
 
