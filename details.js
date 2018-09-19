@@ -1,34 +1,42 @@
 const Details = {
     template: "#details",
-    data: function(){
+    data: function () {
         return {
             item: {},
             related: [],
         }
     },
     created: function () {
-        var vm = this;
-        var id = vm.$route.params.id;
-        
-        vm.favourites = api().favourites.get();
-        
-        api().movies.getById(id).then(function (v) {
-            
-                if (v.backdrop_path) {
-                    v.image_url = image_url + v.backdrop_path;
-                } else {
-                    v.image_url = image_default;
-                }
-                v.isFavourite = vm.favourites.indexOf(v.id) !== -1;
-            vm.item = v;
-        });
-        api().movies.related(id).then(function (v) {
-            v.results.forEach(function (item) {
-               // prepareData(item);
-            })
-            vm.related = v.results;
-        });
+        var id = this.$route.params.id;
+        this.loadData(id);
 
     },
-    
+    watch: {
+        '$route': function (to, from) {
+            this.loadData(to.params.id)
+        }
+    },
+    computed: {
+        favourites: function(){
+        return shared.favourites;
+    } 
+    },
+    methods: {
+        loadData: function (id) {
+            var vm = this;
+            api().movies.getById(id).then(function (v) {
+                //set model for movie 
+                utils.prepareData(v);
+                vm.item = v;
+            });
+            api().movies.related(id).then(function (v) {
+                v.results.forEach(function (item) {
+                    utils.prepareData(item);
+                })
+                vm.related = v.results;
+            });
+        }
+    }
+
+
 };

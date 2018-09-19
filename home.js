@@ -1,32 +1,20 @@
 const Home = {
-    template:"#home",
-    props: ['favourites', 'genres'],
-    data: function(){
-        return{
+    template: "#home",
+    //props: ['favourites', 'genres'],
+    data: function () {
+        return {
             movies: [],
             search: '',
-//            favourites: shared.favourites,
-//            items: [],
-//            genres: shared.genres,
-            genresMap: {},
             genre: '',
-            //favourites: [],
             isLoading: true,
         }
     },
-    created: function(){
+    created: function () {
         var vm = this;
-        vm.genres.forEach(function (obj) {
-            vm.genresMap[obj.id] = obj.name;
-        })
+        //vm.genres = ;
         api().movies.popular().then(function (v) {
             v.results.forEach(function (item) {
-                if (item.backdrop_path) {
-                    item.image_url = image_url + item.backdrop_path;
-                } else {
-                    item.image_url = image_default;
-                }
-                item.isFavourite = vm.favourites.indexOf(item.id) !== -1;
+                utils.prepareData(item);
             })
             vm.movies = v.results;
             vm.isLoading = false;
@@ -35,7 +23,7 @@ const Home = {
     },
     computed: {
         filteredItems: function () {
-//            var vm = this;
+            //            var vm = this;
             var search = this.search.toLowerCase();
             var items = this.movies;
             var genre = this.genre;
@@ -52,29 +40,16 @@ const Home = {
             return items;
 
         },
-       
-    },
-    methods: {
-    
-        setFavourite: function (item) {
-            item.isFavourite = !item.isFavourite;
-            var index = this.favourites.indexOf(item.id);
-            var done = false;
-            if (index !== -1) {
-                api().favourites.remove(item.id);
-                //                .then(function(){
-                                    this.favourites.splice(index, 1);
-                //                });
-
-            } else {
-                api().favourites.add(item.id);
-                //                .then(function(){
-                                    this.favourites.push(item.id);
-                //                });
-            }
+        genres: function(){
+          return shared.genres;   
         },
+        favourites: function(){
+            return shared.favourites;
+        }
+        
 
-    }
-   
+    },
+
+
 
 };

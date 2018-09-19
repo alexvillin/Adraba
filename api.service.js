@@ -55,18 +55,7 @@ var api = function () {
 
             },
             add: function (id) {
-                       api().movies.popular().then(function (v) {
-            v.results.forEach(function (item) {
-                if (item.backdrop_path) {
-                    item.image_url = image_url + item.backdrop_path;
-                } else {
-                    item.image_url = image_default;
-                }
-                item.isFavourite = vm.favourites.indexOf(item.id) !== -1;
-            })
-            vm.movies = v.results;
-            vm.isLoading = false;
-        }); var favourites = this.get();
+                var favourites = this.get();
                 favourites.push(id);
                 return this.set(favourites);
             },

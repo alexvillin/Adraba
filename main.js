@@ -1,23 +1,43 @@
-function prepareData(v){
-    if (v.backdrop_path) {
-                    v.image_url = image_url + v.backdrop_path;
-                } else {
-                    v.image_url = image_default;
-                }
-                v.isFavourite = vm.favourites.indexOf(v.id) !== -1;
-    
+const utils = {
+    prepareData: function (v) {
+        if (v.backdrop_path) {
+            v.image_url = image_url + v.backdrop_path;
+        } else {
+            v.image_url = image_default;
+        }
+        v.isFavourite = shared.favourites.indexOf(v.id) !== -1;
+    }
+}
+
+const shared = {
+
+    genres: [],
+    favourites: [],
+    genresMap: {}
 }
 
 const Favourites = {
-    template:"#favourites",
+    template: "#favourites",
 };
 
 
 const router = new VueRouter({
-  routes: [
-    { path: '/', component: Home, name: 'home' },
-    { path: '/favourites', component: Favourites, name: 'favourites' },
-    { path: '/details/:id', component: Details, name: 'details' }
+    routes: [
+        {
+            path: '/',
+            component: Home,
+            name: 'home'
+        },
+        {
+            path: '/favourites',
+            component: Favourites,
+            name: 'favourites'
+        },
+        {
+            path: '/details/:id',
+            component: Details,
+            name: 'details'
+        }
   ]
 })
 
@@ -25,25 +45,22 @@ var app = new Vue({
     el: "#main",
     router: router,
     data: {
-        favourites: [],
-        genres: [],
-        //shared: shared,
+        shared: shared,
     },
-//    components: {
-//        'home': Home,
-//        'favourites': Favourites,
-//        //'film-card': FilmCard,
-//    },
+
     created: function () {
         var vm = this;
-        vm.favourites = api().favourites.get();
+        vm.shared.favourites = api().favourites.get();
 
         api().genres().then(function (v) {
-            vm.genres = v.genres;
-            
+            vm.shared.genres = v.genres;
+            v.genres.forEach(function (obj) {
+                vm.shared.genresMap[obj.id] = obj.name;
+            })
         })
+        
 
     },
-    
+
 
 });
