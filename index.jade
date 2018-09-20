@@ -41,7 +41,7 @@ html
         script(type="text/x-template", id="favourites")
             #favourites.container
                 h3 Favourites
-                film-card(v-for="item in movies", :key="item.id", :item="item")
+                film-card(v-for="item in movies", :key="item.id", :item="item", v-show="item.isFavourite")
         
         script(type="text/x-template", id="details")
             #details
@@ -60,7 +60,7 @@ html
                     //ion-icon.add_to_favourites(name="star-outline", 
                         @click="addFavourites(item.id)"/*,:class="active: item.favourite"*/)
                     h3 Related films: {{related.length}}
-                    film-card(v-for="item in related", :key="item.id", :item="item")    
+                    film-card(v-for="item in related", :key="item.id", :item="item", small)    
         
         script(type="text/x-template", id="film-card")
             router-link.item.film-card(:to="'/details/'+ item.id")
@@ -83,7 +83,9 @@ html
         script(src='./details.js')
         script(src='./favourites.js')
         script(src='./filmCard.component.js')
+        
         script(src='./api.service.js')
+        script(src='./routes.js')
         script(src='./main.js')
 
 

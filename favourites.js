@@ -1,18 +1,13 @@
 const Favourites = {
     template: "#favourites",
-    data: function(){
+    data: function () {
         return {
             movies: [],
         }
     },
     created: function () {
-
-    },
-    computed: {
-        favourites: function() {
-            var vm = this;
-            var f = shared.favourites;
-            
+        var vm = this;
+        api().favourites.get().then(function (f) {
             f.forEach(function (id) {
                 api().movies.getById(id).then(function (v) {
                     //set model for movie 
@@ -20,20 +15,12 @@ const Favourites = {
                     vm.movies.push(v);
                 });
             })
-            return f;
-        }
+        });
     },
-    watch: {
-        favourites: function (val) {
-            var vm = this;
-            vm.movies = [];
-            val.forEach(function (id) {
-                api().movies.getById(id).then(function (v) {
-                    //set model for movie 
-                    utils.prepareData(v);
-                    vm.movies.push(v);
-                });
-            })
-        }
-    }
+    computed: {
+        favourites: function () {
+            return shared.favourites;
+        },
+    },
+
 };

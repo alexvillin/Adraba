@@ -1,4 +1,3 @@
-
 const image_url = 'https://image.tmdb.org/t/p/w500';
 const image_default = 'img/default.png';
 var api = function () {
@@ -15,16 +14,16 @@ var api = function () {
                         console.log(e);
                     });
             },
-            getById: function(id){
-                return axios.get(url + '/movie/'+ id + key)
+            getById: function (id) {
+                return axios.get(url + '/movie/' + id + key)
                     .then(function (response) {
                         return response.data;
                     }).catch(function (e) {
                         console.log(e);
                     });
             },
-            related: function(id){
-                return axios.get(url + '/movie/'+ id + '/similar' + key)
+            related: function (id) {
+                return axios.get(url + '/movie/' + id + '/similar' + key)
                     .then(function (response) {
                         return response.data;
                     }).catch(function (e) {
@@ -43,28 +42,34 @@ var api = function () {
         favourites: {
             //todo with async
             get: function () {
-                if (typeof (Storage) !== "undefined") {
-                    return JSON.parse(localStorage.getItem('favourites') || "[]");
-                } else {
-                    console.log('Sorry! No Web Storage support..');
-                }
+                return new Promise(function(resolve, reject) {
+                    if (typeof (Storage) !== "undefined") {
+                        resolve(JSON.parse(localStorage.getItem('favourites') || "[]"));
+                    } else {
+                        reject(new Error('Sorry! No Web Storage support..'));
+                    }
+                })
+
             },
             set: function (favourites) {
                 localStorage.setItem('favourites', JSON.stringify(favourites));
-                return favourites.length;
+                return favourites;
 
             },
             add: function (id) {
-                var favourites = this.get();
-                favourites.push(id);
-                return this.set(favourites);
+                var vm = this;
+                return vm.get().then(function (val) {
+                    val.push(id);
+                    return vm.set(val);
+                });
             },
 
-            remove: function (id) {
-                var favourites = this.get();
-                favourites.splice(favourites.indexOf(id), 1);
-                return this.set(favourites);
-                
+            remove: function (index) {
+                var vm = this;
+                return vm.get().then(function (val) {
+                    val.splice(index, 1);
+                    return vm.set(val);
+                })
             },
         },
 

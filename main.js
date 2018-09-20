@@ -17,25 +17,6 @@ const shared = {
 }
 
 
-const router = new VueRouter({
-    routes: [
-        {
-            path: '/',
-            component: Home,
-            name: 'home'
-        },
-        {
-            path: '/favourites',
-            component: Favourites,
-            name: 'favourites'
-        },
-        {
-            path: '/details/:id',
-            component: Details,
-            name: 'details'
-        }
-  ]
-})
 
 var app = new Vue({
     el: "#main",
@@ -46,7 +27,9 @@ var app = new Vue({
 
     created: function () {
         var vm = this;
-        vm.shared.favourites = api().favourites.get();
+        api().favourites.get().then(function(response){
+            vm.shared.favourites = response;
+        });
 
         api().genres().then(function (v) {
             vm.shared.genres = v.genres;

@@ -22,19 +22,16 @@ Vue.component('FilmCard', {
         setFavourite: function (item) {
             item.isFavourite = !item.isFavourite;
             var index = this.favourites.indexOf(item.id);
-            var done = false;
+            var promise;
             if (index !== -1) {
-                api().favourites.remove(item.id);
-                //                .then(function(){
-                this.favourites.splice(index, 1);
-                //                });
+                promise = api().favourites.remove(index);
 
             } else {
-                api().favourites.add(item.id);
-                //                .then(function(){
-                this.favourites.push(item.id);
-                //                });
+                promise = api().favourites.add(item.id);
             }
+            promise.then(function(response){
+                shared.favourites = response;
+            });
         },
 
     }
