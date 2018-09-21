@@ -1,26 +1,33 @@
 Vue.component('FilmCard', {
-//    name: 'FilmCard',
+    //    name: 'FilmCard',
     template: "#film-card",
     props: {
         item: Object,
+        //        small: {
+        //            type: Boolean,
+        //            default: false,
+        //        },
     },
     data: function () {
         return {
-            
+
         }
     },
+    created: function () {
+//        console.log(this.small);
+    },
+
     computed: {
-        favourites: function(){
+        favourites: function () {
             return shared.favourites;
         },
-        genres: function(){
+        genres: function () {
             return shared.genresMap;
         }
     },
     methods: {
 
         setFavourite: function (item) {
-            item.isFavourite = !item.isFavourite;
             var index = this.favourites.indexOf(item.id);
             var promise;
             if (index !== -1) {
@@ -29,8 +36,9 @@ Vue.component('FilmCard', {
             } else {
                 promise = api().favourites.add(item.id);
             }
-            promise.then(function(response){
+            promise.then(function (response) {
                 shared.favourites = response;
+                item.isFavourite = !item.isFavourite;
             });
         },
 

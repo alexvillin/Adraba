@@ -1,0 +1,17 @@
+script(type="text/x-template", id="home")
+    #home
+        form.container-flex.well
+            b-form-input.col-sm(type="search", placeholder="Search", v-model="search")
+            select.form-control.col-sm(v-model='genre')
+                option(value="") Select genre
+                option(v-for="value in genres", :value="value.id") {{value.name}}
+            | Order by
+            b-form-select.col-sm(v-model='orderByValue', :options="orderBy")
+        
+        .isLoading(v-if="isLoading")
+        h3(v-else-if="!filteredItems.length") No films searched
+        //b-card-group(columns)
+        .container-flex
+            film-card.col-sm(v-for="item in filteredItems", :key="item.id", :item="item", @gchange="genre = $event")
+         
+        b-pagination(size="md", :total-rows="total", v-model="page", :per-page="movies.length")

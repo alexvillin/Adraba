@@ -12,16 +12,16 @@ var livereload = require('gulp-livereload');
 var sourcemaps = require('gulp-sourcemaps');
 
 var sources = {
-    jade: "./*.jade",
+    jade: "./jade/*.jade",
     sass: "./scss/*.scss",
-    js: "./*.js"
+    js: "./js/*.js"
 };
 
 // Define destinations object
 var dest = {
     html: "./",
     css: "./css/",
-    js: "./js/"
+    js: "./dest/js/"
 };
 
 // Compile and copy Jade
@@ -38,7 +38,7 @@ gulp.task('sass-sources', function () {
         .pipe(sourcemaps.init())
         .pipe(sass().on('error', sass.logError))
         .pipe(sourcemaps.write('./maps'))
-        .pipe(gulp.dest('./css'));
+        .pipe(gulp.dest(dest.css));
 });
 gulp.task('sass', function (event) {
     return gulp.src(sources.sass)
@@ -61,14 +61,14 @@ gulp.task('server', function () {
     var app = express();
     app.use(connect());
     app.use(express.static(__dirname));
-    //app.listen(4000, '127.0.0.1');
+    app.listen(5500, '127.0.0.1');
 });
 
 // Watch sources for change, executa tasks
 gulp.task('watch', function () {
     livereload.listen({
         host: '127.0.0.1',
-        port: 37687,
+        port: 5500,
     });
     gulp.watch(sources.jade, ["jade", "refresh"]);
     gulp.watch(sources.sass, ["sass", "refresh"]);

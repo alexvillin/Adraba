@@ -1,0 +1,13 @@
+script(type="text/x-template", id="film-card")
+            router-link.film-card(:to="'/details/'+ item.id")
+                img(:src="item.image_url")
+                .rating
+                    i.active(v-for="v in item.rating")
+                p.title {{item.title}}
+                
+                span.badge.badge-warning.mr-1(v-if="genres", v-for="id in item.genre_ids", @click.prevent="$emit('gchange', id)", 
+                    data-toggle="tooltip", data-placement="top", title="select genre") {{genres[id]}} 
+                .descr {{item.overview}}
+                i.icon(:class="item.isFavourite? 'ion-md-heart': 'ion-md-heart-empty'", 
+                    @click.prevent="setFavourite(item)", title="Add to favourites")
+       

@@ -1,0 +1,6 @@
+script(type="text/x-template", id="favourites")
+            #favourites
+                h3 Favourites
+                .container-flex
+                    film-card.col.sm(v-for="item in movies", :key="item.id", :item="item", v-show="item.isFavourite")
+        

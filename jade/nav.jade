@@ -1,0 +1,14 @@
+b-navbar(toggleable="md", v-cloak)
+    b-navbar-toggle(target="nav_collapse")
+    b-navbar-brand
+        img.logo(src="./img/logo.png") 
+        | Movies
+
+    b-collapse.justify-content-end(is-nav, id="nav_collapse")
+
+        b-navbar-nav
+            router-link.nav-link(to="/") Home
+            router-link.nav-link(to="/favourites") Favourites
+            router-link.nav-link(to="/favourites", )
+                .icon.ion-md-heart(title="show favourites") {{favourites.length}}
+

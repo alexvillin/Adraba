@@ -6,8 +6,9 @@ var api = function () {
     return {
         movies: {
 
-            popular: function () {
-                return axios.get(url + '/movie/popular' + key)
+            popular: function (page) {
+                page = page || 1;
+                return axios.get(url + '/movie/popular' + key + '&page=' + page)
                     .then(function (response) {
                         return response.data;
                     }).catch(function (e) {

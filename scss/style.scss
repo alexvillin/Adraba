@@ -9,7 +9,7 @@ body {
     // font-family: Arial, sans-serif;
     //    font-family: Roboto-Medium, AdobeInvisFont, MyriadPro-Regular;
     //   font-size: 32pt;
-//    color: white;
+    //    color: white;
     text-align: center;
     //padding-bottom: 20px;
     //height: 100%;
@@ -18,52 +18,89 @@ body {
     background-size: cover;
     background-attachment: fixed;
 }
-
-
+.logo {
+    height: 50px;
+}
+h3 {
+    color: white;
+    background-color: darkslateblue;
+  margin: 10px;
+  padding: 10px;
+  text-align: start;
+}
 
 .icon {
     color: red;
-    font-size: 25px;
-    cursor: pointer;
-}
-
-.badge {
+    font-size: 1.5rem;
     cursor: pointer;
 }
 
 nav {
+    align-items: center;
     padding: 1.5rem;
     margin-right: 0;
     margin-left: 0;
     border-width: .2rem;
     background-color: white;
     opacity: .8;
+
+    .icon {
+        font-size: 1rem;
+    }
+}
+
+.well {
+
+    margin: 20px 10px;
+    padding: 20px;
+    background-color: lightgrey;
+}
+
+#details {
+    .main-block {
+
+        img {
+            width: 100%;
+            max-width: 600px;
+        }
+    }
+
 }
 
 .container {
+
     margin: 0 auto;
+    padding: 0;
     position: relative;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
     max-width: 1000px;
-    padding: 40px 0 40px;
 
     &:after {
         content: "";
         clear: both;
         display: block;
     }
+
+    &-flex {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
 }
 
-.item {
+
+.film-card {
     margin: 2%;
-    padding: 20px;
-    width: 28%;
-    display: inline-block;
+    padding: 15px;
+    //width: 28%;
+    min-width: 200px;
+    //display: inline-block;
     background-color: white;
     position: relative;
+    padding-bottom: 40px;
 
     &:hover {
         text-decoration: none;
@@ -82,12 +119,12 @@ nav {
     }
 
     .descr {
-        font-size: 12px;
         color: #999;
-        height: 5em;
+        max-height: 100px;
         text-align: justify;
         overflow: hidden;
         text-overflow: ellipsis;
+        padding-top: 10px;
     }
 
     .rating {
@@ -105,99 +142,44 @@ nav {
         }
     }
 
-    .add_to_favourites {
-        height: 34px;
-        width: 34px;
-        display: block;
+    .icon {
         position: absolute;
-        top: 22px;
-        right: 24px;
+        bottom: 0;
+        left: calc(100%/2 - 10px);
+    }
+
+    .badge {
         cursor: pointer;
+    }
 
-        .active {
-            fill: yellow;
+    &.small {
+        max-width: 160px;
+        min-width: 130px;
+        padding: 0;
+        padding-bottom: 35px;
+
+        .title {
+            padding: 0 10 px;
+        }
+
+        .descr {
+            display: none;
         }
     }
-}
 
-@media all and (max-width: 450px) {
-    .item {
-        width: 95%;
-    }
-}
-
-@media all and (max-width: 800px) and (min-width: 450px) {
-    .item {
-        width: 45%;
-
-        &:nth-child(3n) {
-            width: 95%;
-        }
-    }
-}
-
-@media all and (min-width: 800px) {
-    .item {
-        width: 28%;
-    }
-}
-
-#more {
-    padding: 10px 30px;
-    border-radius: 5px;
-    margin: 0 auto;
-    display: inline-block;
-    color: white;
-    background-color: #008080;
-    cursor: pointer;
-
-    &:hover {
-        background-color: grey;
-    }
-}
-
-#scroll {
-    padding: 10px 20px;
-    background-color: grey;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-    position: fixed;
-    top: 0;
-    right: 0;
-    z-index: 10;
-}
-
-#scroll_to_top {
-    border-radius: 50%;
-    background-color: black;
-    color: white;
-    height: 50px;
-    width: 50px;
-    position: fixed;
-    bottom: 50px;
-    right: 30px;
-    padding: 8px;
-    cursor: pointer;
-    display: none;
-}
-
-#scroll_to_top:hover {
-    background-color: #008080;
-    color: white;
 }
 
 .isLoading {
-   
-        border: 10px solid #f3f3f3;
-        border-radius: 50%;
-        border-top: 10px solid #3498db;
-        width: 35px;
-        height: 35px;
-        -webkit-animation: spin 2s linear infinite;
-        animation: spin 2s linear infinite;
-        margin: 0 auto;
-   
+
+    border: 10px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 10px solid #3498db;
+    width: 35px;
+    height: 35px;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+    margin: 0 auto;
+
 
 }
 

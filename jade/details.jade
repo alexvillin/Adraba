@@ -1,0 +1,26 @@
+script(type="text/x-template", id="details")
+    #details
+        .isLoading(v-if="!item.id")
+        .container(v-else)
+            .well.main-block
+                img(:src="item.image_url")
+                .rating
+                    i.active
+                h1.title {{item.title}}
+                span.badge.badge-warning.mr-1(v-for="item in item.genres") {{item.name}} 
+                .descr {{item.overview}}
+                //.container-flex
+                | Budget: 
+                span.badge.badge-success.mr-1 {{item.budget}}
+                | Release: 
+                span.badge.badge-success.mr-1 {{item.release_date}}
+                | Popularity: 
+                span.badge.badge-success.mr-1 {{item.popularity}}
+                | Vote: 
+                span.badge.badge-success.mr-1 {{item.vote_average}}
+                
+                .icon.col-sm(:class="item.isFavourite? 'ion-md-heart': 'ion-md-heart-empty'")
+            h3 Related films: {{related.length}}
+            .container-flex
+                film-card.small.col-sm(v-for="item in related", :key="item.id", :item="item")    
+        

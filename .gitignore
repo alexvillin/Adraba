@@ -1,1 +1,5 @@
 node_modules
+trash
+__*.*
+__*
+*.html
