@@ -1,6 +1,7 @@
 script(type="text/x-template", id="favourites")
             #favourites
-                h3 Favourites
+                h3(v-if="movies.length") Favourites
+                h3(v-else) No favourites selected   
                 .container-flex
                     film-card.col.sm(v-for="item in movies", :key="item.id", :item="item", v-show="item.isFavourite")
         
