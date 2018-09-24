@@ -3,3 +3,4 @@ trash
 __*.*
 __*
 *.html
+/package-lock.json
