@@ -6,6 +6,7 @@ How to install
 ```
 > cd [workdir]
 > git clone [url]
+> npm i
 > gulp
 ```
 + Use gulp for generate html from jade (optional)
