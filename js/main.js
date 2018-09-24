@@ -1,3 +1,4 @@
+
 const utils = {
     prepareData: function (v) {
         if (v.backdrop_path) {

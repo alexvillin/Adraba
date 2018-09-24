@@ -1,11 +1,13 @@
 const Details = {
     template: "#details",
+    
     data: function () {
         return {
             item: {},
             related: [],
         }
     },
+    
     created: function () {
         var id = this.$route.params.id;
         this.loadData(id);
@@ -16,10 +18,11 @@ const Details = {
             this.loadData(to.params.id)
         }
     },
+    
     computed: {
-        favourites: function(){
-        return shared.favourites;
-    } 
+        favourites: function () {
+            return shared.favourites;
+        }
     },
     methods: {
         loadData: function (id) {

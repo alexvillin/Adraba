@@ -5,8 +5,11 @@ var gulp = require('gulp');
 
 var jade = require('gulp-jade');
 var sass = require('gulp-sass');
+var babel = require('gulp-babel');
+var concat = require('gulp-concat');
+
 //var gutil = require('gulp-util');
-//var uglify = require('gulp-uglify');
+var uglify = require('gulp-uglifyjs');
 var connect = require('connect-livereload');
 var livereload = require('gulp-livereload');
 var sourcemaps = require('gulp-sourcemaps');
@@ -21,14 +24,28 @@ var sources = {
 var dest = {
     html: "./",
     css: "./css/",
-    js: "./dest/js/"
+    js: "./"
 };
+var host = '127.0.0.1';
+var port = '5500';
 
+// Minify and copy all JavaScript
+gulp.task('scripts', function(){
+    return gulp.src(['./js/!(main)*.js', './js/main.js'])
+       // .pipe(sourcemaps.init())
+        .pipe(babel({
+            presets: ['@babel/env']
+        }))
+        .pipe(concat('app.js'))
+        .pipe(uglify())    
+        //.pipe(sourcemaps.write('.'))
+        .pipe(gulp.dest(dest.js))
+});
 // Compile and copy Jade
 gulp.task("jade", function (event) {
     return gulp.src(sources.jade)
         .pipe(jade({
-            //pretty: true
+            pretty: true
         }))
         .pipe(gulp.dest(dest.html))
 });
@@ -43,43 +60,38 @@ gulp.task('sass-sources', function () {
 gulp.task('sass', function (event) {
     return gulp.src(sources.sass)
         .pipe(sass({
-            //outputStyle: 'compressed'
-        })
-        .on('error', sass.logError))
+                //outputStyle: 'compressed'
+            })
+            .on('error', sass.logError))
         .pipe(gulp.dest(dest.css))
 });
-// Minify and copy all JavaScript
-//gulp.task('scripts', function () {
-//    gulp.src(sources.scripts)
-//        .pipe(uglify())
-//        .pipe(gulp.dest(destinations.js));
-//});
-//babel
 
 // Server
 gulp.task('server', function () {
-    var app = express();
-    app.use(connect());
-    app.use(express.static(__dirname));
-    app.listen(5500, '127.0.0.1');
+    var server = express();
+    server.use(connect({
+        port: port
+    }));
+    server.use(express.static(__dirname));
+    server.listen(port, host);
 });
 
 // Watch sources for change, executa tasks
 gulp.task('watch', function () {
-    livereload.listen({
-        host: '127.0.0.1',
-        port: 5500,
-    });
+
     gulp.watch(sources.jade, ["jade", "refresh"]);
     gulp.watch(sources.sass, ["sass", "refresh"]);
-    gulp.watch(sources.js, ["refresh"]);
-    
+    gulp.watch(sources.js, ["scripts", "refresh"]);
+
 });
 
 gulp.task("refresh", function () {
-    livereload();
-    console.log('LiveReload is triggered');
+//    livereload.listen({
+//        port: port,
+//        host: host
+//    });
+//    console.log('LiveReload is triggered');
 });
 
 // Define default task
-gulp.task("default", ["jade", "sass", "watch"]);
+gulp.task("default", ["server", "jade", "sass", "scripts", "watch"]);

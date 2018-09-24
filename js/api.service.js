@@ -53,6 +53,7 @@ var api = function () {
 
             },
             set: function (favourites) {
+                app.$toastr.success('Favourites changed');
                 localStorage.setItem('favourites', JSON.stringify(favourites));
                 return favourites;
 
