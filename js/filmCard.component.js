@@ -18,25 +18,24 @@ Vue.component('FilmCard', {
     },
 
     computed: {
-        favourites: function () {
+        favourites() {
             return shared.favourites;
         },
-        genres: function () {
+        genres() {
             return shared.genresMap;
         }
     },
     methods: {
 
-        setFavourite: function (item) {
+        setFavourite(item) {
             var index = this.favourites.indexOf(item.id);
             var promise;
             if (index !== -1) {
                 promise = api().favourites.remove(index);
-
             } else {
                 promise = api().favourites.add(item.id);
             }
-            promise.then(function (response) {
+            promise.then((response) => {
                 shared.favourites = response;
                 item.isFavourite = !item.isFavourite;
             });

@@ -18,19 +18,19 @@ const Home = {
 
     },
     computed: {
-        filteredItems: function () {
+        filteredItems() {
             //            var vm = this;
             var search = this.search.toLowerCase();
             var items = this.movies;
             var genre = this.genre;
             var sorting = this.orderByValue;
             if (search) {
-                items = items.filter(function (item) {
+                items = items.filter((item) => {
                     return Object.values(item).join().toLowerCase().indexOf(search) !== -1;
                 })
             }
             if (genre) {
-                items = items.filter(function (item) {
+                items = items.filter((item) => {
                     return item.genre_ids.indexOf(genre) !== -1;
                 })
             }
@@ -40,10 +40,10 @@ const Home = {
             return items;
 
         },
-        genres: function () {
+        genres() {
             return shared.genres;
         },
-        favourites: function () {
+        favourites() {
             return shared.favourites;
 
         },
@@ -59,18 +59,18 @@ const Home = {
 
     },
     watch: {
-        page: function (val) {
+        page(val) {
             this.getPopularMovies(val);
 //           router.push('/');
         }
 
     },
     methods: {
-        getPopularMovies: function (page) {
+        getPopularMovies(page) {
             var vm = this;
             vm.isLoading = true;
-            api().movies.popular(page).then(function (v) {
-                v.results.forEach(function (item) {
+            api().movies.popular(page).then((v) => {
+                v.results.forEach((item) => {
                     utils.prepareData(item);
                 })
                 vm.movies = v.results;

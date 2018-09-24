@@ -20,20 +20,20 @@ const Details = {
     },
     
     computed: {
-        favourites: function () {
+        favourites () {
             return shared.favourites;
         }
     },
     methods: {
-        loadData: function (id) {
+        loadData (id) {
             var vm = this;
-            api().movies.getById(id).then(function (v) {
+            api().movies.getById(id).then((v) => {
                 //set model for movie 
                 utils.prepareData(v);
                 vm.item = v;
             });
-            api().movies.related(id).then(function (v) {
-                v.results.forEach(function (item) {
+            api().movies.related(id).then((v) => {
+                v.results.forEach((item) => {
                     utils.prepareData(item);
                 })
                 vm.related = v.results;
