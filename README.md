@@ -9,9 +9,8 @@ How to install
 > npm i
 > gulp
 ```
-+ Use gulp for generate html from jade (optional)
-+ Install any webserver for look at localhost 
- OR https://alexvillin.github.io/Adraba/#/
++ I use gulp for generate html from jade, minify and concat js files, and start local web server on http://localhost:5500
++ You can use https://alexvillin.github.io/Adraba/#/ for watch the result
 
 
 # Frontend Developer Tech Task
