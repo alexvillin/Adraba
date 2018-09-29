@@ -13,11 +13,7 @@ How to install
 + You can use https://alexvillin.github.io/Adraba/#/ for watch the result
 
 
-# Frontend Developer Tech Task
-
-We need to create an app to review movies from [The Movie Database API](https://www.themoviedb.org/).
-
-## Requirements:
+## Task requirements:
 - Use [The Movie Database API](https://www.themoviedb.org/), we want to see your work with real data.
 - On the Homepage, we should see a list of popular movies. There should be pagination or infinite scroll.
 - When the user clicks on a movie card in the list, we go to the page where we will see detailed information about the movie. Also, there should be the list of related movies.
