@@ -1,7 +1,7 @@
 # Adraba
 test 
 
-I didn't use Vue CLI here and some modern bundlers like Webpack (I use them in another my repositiry)
+I didn't use Vue CLI here and some modern bundlers like Webpack (I use them in [another my repositiry](https://github.com/alexvillin/Vue-tables-stress-test) )
 The main case in this task is using external API (THE MovieDB) and start work with Vue-router and common Vue configuration.
 Some cases like filtering and ordering work with internal logic (it's like example of internal data processing only), so pagination can crash when search or ordering active.
 
