@@ -1,7 +1,11 @@
 # Adraba
-test
+test 
 
+I didn't use Vue CLI here and some modern bundlers like Webpack (I use them in another my repositiry)
+The main case in this task is using external API (THE MovieDB) and start work with Vue-router and common Vue configuration.
+Some cases like filtering and ordering work with internal logic (it's like example of internal data processing only), so pagination can crash when search or ordering active.
 
+--------------------
 How to install
 ```
 > cd [workdir]
